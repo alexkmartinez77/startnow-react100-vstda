@@ -7,11 +7,16 @@ class App extends Component {
     this.state = {
     text: '',
     priority: '',
-    todos: [], // do not change the object directly set state instead
+    todos: [], 
+    editEnabled: 'false', 
     },   
     this.changeText = this.changeText.bind(this);
     this.changePriority = this.changePriority.bind(this);
     this.addObject = this.addObject.bind(this);
+    this.deleteTodo = this.deleteTodo.bind(this);
+    this.changeEditEnabled = this.changeEditEnabled.bind(this);
+    this.updateText = this.updateText.bind(this);
+    this.updatePriority = this.updatePriority.bind(this);
      }
 
   changeText(textAdded){
@@ -22,25 +27,72 @@ class App extends Component {
     this.setState({ priority:priorityAdded.target.value });
   }
 
+  deleteTodo(index){
+    const newArray = [...this.state.todos];
+
+    newArray.splice(index , 1);
+
+    this.setState({
+      todos: newArray,
+    }, () => console.log(this.state.todos))
+  }
+
+  changeEditEnabled(index){
+      const newArray = [...this.state.todos];
+
+      if(newArray[index].editEnabled == 'true'){  
+         newArray[index].editEnabled = 'false';
+      }
+      else if(newArray[index].editEnabled == 'false'){
+        newArray[index].editEnabled = 'true';
+      }     
+
+      this.setState({
+        todos: newArray,
+      }, () => console.log(this.state.todos))
+    }
+
+  updateText(index,textChanged){
+     const newArray = [...this.state.todos];
+     newArray[index].text = textChanged;
+
+     this.setState({
+       todos: newArray,
+     }, () => console.log(this.state.todos))
+   }
+
+  updatePriority(index,priorityChanged){
+    const newArray = [...this.state.todos];
+    newArray[index].priority = priorityChanged;
+
+    this.setState({
+      todos: newArray,
+    }, () => console.log(this.state.todos))
+  }
+
   addObject(){
-    var newArray = this.state.todos;
+    const newArray = [...this.state.todos];
     
     var newObject = {
       text: this.state.text,
       priority: this.state.priority,
+      editEnabled:'false',
+      todos:this.state.todos,
     }
-  
+
     newArray.push(newObject);
+
     this.setState({
       todos: newArray,
       text: '',
       priority: '',
-    })
+      editEnabled: 'false',
+    }, () => console.log(this.state.todos))
 
     this.refs.text.value = '';
     this.refs.priority.value = '';
-    console.log(this.state.todos);
   }
+
 
 
   render() {
@@ -54,38 +106,59 @@ class App extends Component {
           <div className="col-md-12">
             <form id = "todoForm">
             <div className="col-md-4">
-              <div>
-              <p>Add New Todo</p>
-              </div><br></br>
               <div className="row">
+              <h4>Add New Todo</h4>
+              </div>
+              <div className="row left-row" >
                 <div className="col-md-12">
                   <br></br>
                   <h5>I want to:</h5>
-                  <textarea name="text" ref="text" cols="40" rows="5" className="create-todo-text" defaultValue={this.state.text} onChange={this.changeText}></textarea>                              
+                  <textarea ref="text" cols="40" rows="5" className="create-todo-text" defaultValue={this.state.text} onChange={this.changeText}></textarea>                              
                   <br></br>
                   <br></br>
                   <h5>How much of a priority is this?</h5>
-                  <select name="priority" ref="priority" defaultValue={this.state.priority} onChange={this.changePriority}>
-                    <option value="0">Select Priority</option>
-                    <option value="1">High Priority</option>
-                    <option value="2">Medium Priority</option>
-                    <option value="3">Low Priority</option>
+                  <select className="create-todo-priority" ref="priority" defaultValue={this.state.priority} onChange={this.changePriority}>
+                      <option>Select a Priority</option>
+                      <option value="1" >High Priority</option>
+                      <option value="2">Medium Priority</option>
+                      <option value="3">Low Priority</option>
                   </select><br></br><br></br>
                 </div>
               </div>
               <br></br>
-              <button type="button" className="btn btn-success" onClick= {this.addObject}>Add</button>
+              <button type="button" className="create-todo btn btn-success center-align" onClick= {this.addObject}>Add</button>
             </div>   
-            </form>     
-            <div className="col-md-8">
-              <div>
-                <p>View Todos</p>
+            </form>  
+            <div className="col-md-1">
+            </div>
+            <div className="col-md-7">
+              <div className="row">
+                <h4>View Todos</h4>
               </div>
-              <div>
-                <h5>Welcome to very simple todo app!</h5>
-                 <p>Get Started now by adding a new todo on the left.</p>
-                 <ul className="list-group">
-                    {this.state.todos.map(todoitem=>(<TodoItem priority={todoitem.priority} text={todoitem.text}/>))}
+              <div>             
+                 <ul className="list-group">      
+                    {
+                      this.state.todos.length == 0 
+                      ? <div className="row">
+                        <div className="list-group-item list-group-item-primary">
+                        <h5>Welcome to this very simple todo app!</h5>
+                        <p>Get Started now by adding a new todo on the left.</p>
+                        </div>
+                        </div>
+                      : this.state.todos.length >=1
+                      ? this.state.todos.map((todoitem, index)=>(<TodoItem priority={todoitem.priority}
+                                                                      text={todoitem.text} 
+                                                               editEnabled={todoitem.editEnabled} 
+                                                                     todos={todoitem.todos}
+                                                             ondeleteClick={this.deleteTodo}
+                                                               oneditClick={this.changeEditEnabled}
+                                                                     index={index}
+                                                                       key={index}
+                                                               updateText={this.updateText}
+                                                            updatePriority={this.updatePriority}
+                                                                     />))
+                      : ''
+                    }         
                  </ul>
               </div>
               <br></br>
