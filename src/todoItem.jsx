@@ -9,6 +9,7 @@ class TodoItem extends Component {
         this.save = this.save.bind(this);
         this.changeText = this.changeText.bind(this);
         this.changePriority = this.changePriority.bind(this);
+        this.completed = this.completed.bind(this);
          }
 
     onClickDelete(){
@@ -38,32 +39,70 @@ class TodoItem extends Component {
         this.props.oneditClick(index);
     }
 
+    completed(){
+        const index = this.props.index;
+        this.props.changeCompleted(index);
+    }
+
     render() {
       const text = this.props.text;
       const priority = this.props.priority;
       const todos = [...this.props.todos];
+      const completed = this.props.completed;
 
-        switch (priority) {
-            case '1':
-                var x = 'list-group-item list-group-item-danger';
-                break;
-            case '2':
-                var x = 'list-group-item list-group-item-warning';
-                break;
-            case '3':
-                var x = 'list-group-item list-group-item-success';
-                break;
+    
+    if(completed=='true'&& priority=='1'){
+        var x = 'list-group-item list-group-item-danger strikethrough';
     }
+    if(completed=='false'&&priority=='1'){
+        var x = 'list-group-item list-group-item-danger';
+    }
+    if(completed=='true'&& priority=='2'){
+        var x = 'list-group-item list-group-item-warning strikethrough';
+    }
+    if(completed=='false'&&priority=='2'){
+        var x = 'list-group-item list-group-item-warning';
+    }
+    if(completed=='true'&& priority=='3'){
+        var x = 'list-group-item list-group-item-success strikethrough';
+    }
+    if(completed=='false'&&priority=='3'){
+        var x = 'list-group-item list-group-item-success';
+    }
+
+        // var x;
+        // switch (completed | priority) {
+        //     case 'true' | '1':
+        //         x = 'list-group-item list-group-item-danger strikethrough';
+        //         break;
+        //     case 'false' | '1':
+        //         x = 'list-group-item list-group-item-danger';
+        //         break;
+        //     case 'true' | '2':
+        //         x = 'list-group-item list-group-item-warning strikethrough';
+        //         break;
+        //     case 'false' | '2':
+        //         x = 'list-group-item list-group-item-warning';
+        //         break;
+        //     case 'true' | '3':
+        //         x = 'list-group-item list-group-item-success strikethrough';
+        //         break;
+        //     case 'false' | '3':
+        //         x = 'list-group-item list-group-item-success';
+        //         break;               
+    //}
+
+
             return(
                 <div>
                     {
                       this.props.editEnabled == 'false'
-                      ? <div className="row">                    
-                            <li className={x}><input type='checkbox'></input><strong>{text}</strong>
+                      ?  <div className="row"> 
+                            <li className={x}><input type='checkbox' onClick={this.completed}></input><strong>{text}</strong>
                             <a href="#" className = "delete-todo" onClick={this.onClickDelete}><span className="glyphicon glyphicon-trash"></span></a>   
                             <a href="#" className = "edit-todo" onClick={this.onClickEdit}><span className="glyphicon glyphicon-edit"></span></a>
                             </li>
-                        </div>
+                          </div>
                       : this.props.editEnabled == 'true'
                       ? <div className="row">
                             <li className={x}>

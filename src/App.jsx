@@ -8,6 +8,7 @@ class App extends Component {
     text: '',
     priority: '',
     todos: [], 
+    completed: 'false',
     editEnabled: 'false', 
     },   
     this.changeText = this.changeText.bind(this);
@@ -17,6 +18,7 @@ class App extends Component {
     this.changeEditEnabled = this.changeEditEnabled.bind(this);
     this.updateText = this.updateText.bind(this);
     this.updatePriority = this.updatePriority.bind(this);
+    this.changeCompleted = this.changeCompleted.bind(this);
      }
 
   changeText(textAdded){
@@ -39,18 +41,33 @@ class App extends Component {
 
   changeEditEnabled(index){
       const newArray = [...this.state.todos];
-
       if(newArray[index].editEnabled == 'true'){  
-         newArray[index].editEnabled = 'false';
-      }
-      else if(newArray[index].editEnabled == 'false'){
-        newArray[index].editEnabled = 'true';
-      }     
-
+        newArray[index].editEnabled = 'false';
+     }
+     else if(newArray[index].editEnabled == 'false'){
+       newArray[index].editEnabled = 'true';
+     }     
+     
       this.setState({
         todos: newArray,
-      }, () => console.log(this.state.todos))
+      }, () => console.log("Change Edit Enabled Function"))
     }
+
+  changeCompleted(index){
+    const newArray = [...this.state.todos];
+
+    if(newArray[index].completed == 'true'){  
+      newArray[index].completed = 'false';
+   }
+    else if(newArray[index].completed == 'false'){
+           newArray[index].completed = 'true';
+   } 
+
+
+    this.setState({
+      todos: newArray,
+    }, () => console.log(this.state.todos))
+  }
 
   updateText(index,textChanged){
      const newArray = [...this.state.todos];
@@ -78,6 +95,7 @@ class App extends Component {
       priority: this.state.priority,
       editEnabled:'false',
       todos:this.state.todos,
+      completed: 'false',
     }
 
     newArray.push(newObject);
@@ -154,11 +172,14 @@ class App extends Component {
                                                                oneditClick={this.changeEditEnabled}
                                                                      index={index}
                                                                        key={index}
-                                                               updateText={this.updateText}
+                                                                updateText={this.updateText}
                                                             updatePriority={this.updatePriority}
+                                                           changeCompleted={this.changeCompleted}
+                                                                 completed={todoitem.completed}
                                                                      />))
                       : ''
                     }         
+
                  </ul>
               </div>
               <br></br>
